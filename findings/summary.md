@@ -1,6 +1,6 @@
 # Findings Summary
 
-Current as of v9 (2026-06-07). All results use Day-Avg and Never Below as defined in [backtest-design.md](../methodology/backtest-design.md). Benchmark for Day-Avg: 50% = random.
+Current as of v10.2 (2026-06-09). All results use Day-Avg and Never Below as defined in [backtest-design.md](../methodology/backtest-design.md). Benchmark for Day-Avg: 50% = random.
 
 ---
 
@@ -66,4 +66,4 @@ Full sweep results are in the v9 Reports folder (not included in this public rep
 
 ## Sample Size Caveat
 
-The signal dataset covers approximately 15–19 weeks of history at v9. At this sample size, longer-horizon results (75d+) have reduced n due to measurement window truncation. The findings above should be treated as directional evidence of edge rather than definitive quantitative results. Results will be updated as the dataset grows.
+The underlying dataset spans roughly 73 weeks (about 16 months) across 15 ETFs, from January 2025. Because forward-return windows overlap, this yields several thousand scored observations. But selectivity is the point of the system: the most precise, high-conviction signals deliberately fire only tens of times across the period, and the rarest tradeable setups only a handful of times a year. Treat results at small n (< 15) as directional rather than definitive. Longer horizons (75d+) still truncate at the measurement-window boundary and carry reduced n. Headline win rates on the most selective signals rest on small samples by design — they are reported with their n throughout, never dressed up as larger than they are.

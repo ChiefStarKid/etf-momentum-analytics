@@ -4,6 +4,16 @@ This project evolved through 10 major versions over approximately three weeks. E
 
 ---
 
+## v10 — Bullish-Move Label and PCS Profiling (2026-06-08 to 06-09)
+
+**Question:** Can a "Bullish Move" label — indifferent to interim dips, unlike the Bottom-Exhaustion label which penalises any drop below reference — isolate setups suited to short-dated put credit spreads?
+
+**What changed:** Introduced BM labels in two variants (maximum drawup, and price-volume mass above a raised bar), swept across six forward windows and multiple gain thresholds. v10.1 tested BM+BE combinations for higher signal volume. v10.2 profiled the live BM signal end to end: daily gain path, drawdown-before-peak, day-of-peak distribution, and a put-credit-spread win-rate matrix across DTE and OTM buffer.
+
+**Finding:** The highest-conviction BM signal is rare — single-digit occurrences across roughly 16 months — but its gain path is tight and its interim drawdowns shallow, which is exactly the profile a short-dated put credit spread wants. This is consistent with the pattern that runs through the whole project: tighter filters buy precision at the cost of frequency, and the rarest signals must be read with their small n in mind.
+
+---
+
 ## v9 — Weekly Calibrated (2026-06-07)
 
 **Question:** Can percentile-rank labelling replace hard thresholds across all signal types, and does it hold up under multi-dimensional sweep analysis?
