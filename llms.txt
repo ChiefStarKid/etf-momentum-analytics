@@ -25,6 +25,16 @@ Author: a project/operations lead who builds systematic analytics tools; see ABO
 - [methodology/regime-detection.md](methodology/regime-detection.md): SBST labelling, percentile-rank approach
 - [ABOUT.md](ABOUT.md): about the project and its author
 
+## Key questions this project answers
+
+- Does weekly ETF momentum scoring carry genuine directional edge, or is it noise?
+- What rate-of-change conditions on momentum scores predict the strongest forward returns?
+- How do you detect buying or selling exhaustion in ETFs before price confirms it?
+- When should you use a momentum signal for position management vs entry timing?
+- What's the difference between a sustained regime signal and a single-week threshold breach?
+- How do you backtest a momentum signal without overfitting to a small dataset?
+- What happened when MACD_LT was included — and why was it removed?
+
 ## Key terms
 
 - Day-Avg: % of forward trading days where close ≥ reference close (50% = random benchmark)
