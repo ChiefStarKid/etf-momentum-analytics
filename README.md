@@ -42,7 +42,7 @@ The scores themselves are not useful for trade entry timing — by the time a sc
 
 ```
 README.md                       ← this file
-CHANGELOG.md                    ← analytical version history (v1.0 → v9)
+CHANGELOG.md                    ← analytical version history (v1.0 → v10.2)
 methodology/
   signal-design.md              ← LT/MT/ST framework, exhaustion hypothesis, metric definitions
   backtest-design.md            ← measurement methodology, horizons, metrics
@@ -56,9 +56,9 @@ ABOUT.md                        ← about this project and its author
 
 ## Current Version
 
-**v9 — Weekly Calibrated** (2026-06-07)
+**v10.2 — Bullish-Move Label and PCS Profiling** (2026-06-09)
 
-Percentile-rank labelling across all signal types. Sweep analyses cover band width, combo selection, window size, stride, and temporal consistency. BE Intersection Tier introduced as a high-precision sub-label. See [CHANGELOG.md](CHANGELOG.md) for the full analytical journey.
+A Bullish-Move label (indifferent to interim dips) isolates setups suited to short-dated put credit spreads; v10.2 profiles the live signal's gain path, drawdown, and win-rate matrix. Built on the v9 percentile-rank labelling foundation (sweep analyses across band width, combo selection, window size, stride, and temporal consistency; BE Intersection Tier as a high-precision sub-label). See [CHANGELOG.md](CHANGELOG.md) for the full analytical journey.
 
 ---
 

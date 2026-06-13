@@ -1,0 +1,33 @@
+# etf-momentum-analytics
+
+> A systematic backtest measuring whether weekly momentum scores carry genuine directional edge in US equity ETFs — and under what rate-of-change conditions that edge is strongest. The hypothesis: heatmap-style momentum scores act as a proxy for bulk volume profile, so a score that is falling but decelerating signals buying/selling exhaustion before price confirms it.
+
+This is a research repository, not a tool or library — it documents methodology, findings, and a 10-version analytical journey. Raw signal data and the proprietary heatmap source are not included; the methodology is reproducible given a comparable weekly momentum score series. Price data is public OHLC (yfinance).
+
+Scope: 15 US equity ETFs (SPY, QQQ, DIA, IWM + 11 sector ETFs), ~73 weeks / 16 months from January 2025, several thousand overlapping forward-return windows. The most selective signals fire rarely by design and are reported with their n throughout — small samples are flagged, never dressed up.
+
+Author: a project/operations lead who builds systematic analytics tools; see ABOUT.md.
+
+## Core findings
+
+- WD_MT < 0 + Accel_MT ≥ 0 (MT momentum falling but decelerating) is the strongest two-metric condition: 81–83% Day-Avg at 30–60d vs a 56% baseline (n=20). The deceleration filter drives the gap.
+- LT-RECOVERY signals hold edge across all measured horizons: 76% (15d) to 88% (60d) Day-Avg.
+- MACD_LT is inversely correlated with forward returns and was removed — strong LT acceleration means no exhaustion yet.
+- Percentile-rank thresholds outperform fixed cutoffs in stability (v5 onward).
+
+## Docs
+
+- [README.md](README.md): the exhaustion hypothesis, what the project does, key findings, what the results do and do not show, reproducibility
+- [CHANGELOG.md](CHANGELOG.md): the full analytical version history, v1.0 → v10.2 — each version's question, what changed, and what was found (including findings that overturned prior assumptions)
+- [findings/summary.md](findings/summary.md): key results tables, calibration state, and the sample-size caveat
+- [methodology/signal-design.md](methodology/signal-design.md): LT/MT/ST framework, exhaustion hypothesis, metric definitions (WD, Accel, delta)
+- [methodology/backtest-design.md](methodology/backtest-design.md): measurement methodology, Day-Avg / Never Below metrics, horizons, sample-size disclosure
+- [methodology/regime-detection.md](methodology/regime-detection.md): SBST labelling, percentile-rank approach
+- [ABOUT.md](ABOUT.md): about the project and its author
+
+## Key terms
+
+- Day-Avg: % of forward trading days where close ≥ reference close (50% = random benchmark)
+- Never Below: % of trades where close stayed ≥ reference on every forward day (stricter)
+- WD / Accel / delta: rate-of-change metrics capturing how fast momentum scores move, not just where they are
+- LT / MT / ST: long-, medium-, short-term momentum score timeframes
