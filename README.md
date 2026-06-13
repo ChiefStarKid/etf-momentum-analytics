@@ -1,5 +1,11 @@
 # ETF Momentum Analytics — Exhaustion Detection via Rate-of-Change Analysis
 
+If you trade US equity ETFs — whether using options strategies like put credit spreads, or managing directional exposure across sector ETFs — one of the hardest problems is identifying when a trend is losing force before price confirms it. This project is a systematic attempt to solve that problem using rate-of-change analysis on weekly momentum scores.
+
+It's built for quantitative traders, options strategists, and systematic investors working with ETF momentum signals who want an earlier read on exhaustion than price action alone provides. The backtest covers 15 US equity ETFs (SPY, QQQ, DIA, IWM, and 11 sector ETFs) over multi-year weekly data, with forward return measurements at 15–120 day horizons.
+
+---
+
 Weekly momentum scores derived from heatmap-style signals are, by design, lagging indicators. They reflect accumulated price history — not forward prediction. This project starts from that constraint and asks a different question: **not whether the scores predict direction, but whether their rate of change reveals buying or selling exhaustion that price action alone does not expose.**
 
 The hypothesis is that heatmap scores function as a proxy for bulk volume profile analysis. A score that is falling but decelerating suggests that selling pressure is dissipating — the trend may still be intact on the chart, but the underlying force sustaining it is weakening. Catching that transition early, before price confirms it, is the analytical problem this project works on.
@@ -67,3 +73,27 @@ A Bullish-Move label (indifferent to interim dips) isolates setups suited to sho
 Raw signal data and the underlying heatmap source are proprietary and not included in this repository. The methodology, metric definitions, and findings are fully documented and independently reproducible given a comparable weekly momentum score series.
 
 Price data uses publicly available OHLC data (yfinance), adjusted for splits and dividends.
+
+---
+
+## Sample output
+
+Forward signal quality table for the `LT-RECOVERY` label (v10.2):
+
+| Horizon | n | Day-Avg | Never Below |
+|---------|---|---------|-------------|
+| 15d | 18 | 76% | 61% |
+| 30d | 17 | 82% | 59% |
+| 60d | 15 | 88% | 67% |
+| 120d | 15 | 85% | 60% |
+
+*Day-Avg = % of forward trading days closing above the reference close. Never Below = % of trades with zero down-closes across the full horizon. Both metrics are calculated per trade, then averaged.*
+
+Full results tables and calibration state: [findings/summary.md](findings/summary.md)
+
+---
+
+## Questions and feedback
+
+- **General enquiries:** [joseph@kainosis.com](mailto:joseph@kainosis.com)
+- **Bugs and discussion:** [open an issue](../../issues)
