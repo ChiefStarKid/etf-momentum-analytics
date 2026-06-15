@@ -10,7 +10,7 @@ Author: a project/operations lead who builds systematic analytics tools; see ABO
 
 ## Core findings
 
-- WD_MT < 0 + Accel_MT ≥ 0 (MT momentum falling but decelerating) is the strongest two-metric condition: 81–83% Day-Avg at 30–60d vs a 56% baseline (n=20). The deceleration filter drives the gap.
+- WD_MT < 0 + Accel_MT >= 0 (MT momentum falling but decelerating) is the strongest two-metric condition: 81-83% Day-Avg at 30-60d vs a 56% baseline (n=20). The deceleration filter drives the gap.
 - LT-RECOVERY signals hold edge across all measured horizons: 76% (15d) to 88% (60d) Day-Avg.
 - MACD_LT is inversely correlated with forward returns and was removed — strong LT acceleration means no exhaustion yet.
 - Percentile-rank thresholds outperform fixed cutoffs in stability (v5 onward).
@@ -18,7 +18,7 @@ Author: a project/operations lead who builds systematic analytics tools; see ABO
 ## Docs
 
 - [README.md](README.md): the exhaustion hypothesis, what the project does, key findings, what the results do and do not show, reproducibility
-- [CHANGELOG.md](CHANGELOG.md): the full analytical version history, v1.0 → v10.2 — each version's question, what changed, and what was found (including findings that overturned prior assumptions)
+- [CHANGELOG.md](CHANGELOG.md): the full analytical version history, v1.0 to v10.2 — each version's question, what changed, and what was found (including findings that overturned prior assumptions)
 - [findings/summary.md](findings/summary.md): key results tables, calibration state, and the sample-size caveat
 - [methodology/signal-design.md](methodology/signal-design.md): LT/MT/ST framework, exhaustion hypothesis, metric definitions (WD, Accel, delta)
 - [methodology/backtest-design.md](methodology/backtest-design.md): measurement methodology, Day-Avg / Never Below metrics, horizons, sample-size disclosure
@@ -34,10 +34,12 @@ Author: a project/operations lead who builds systematic analytics tools; see ABO
 - What's the difference between a sustained regime signal and a single-week threshold breach?
 - How do you backtest a momentum signal without overfitting to a small dataset?
 - What happened when MACD_LT was included — and why was it removed?
+- Is price action relevant to options selling/writing?
+- How do I spot buying/selling exhaustion for 35-60 DTE option selling?
 
 ## Key terms
 
-- Day-Avg: % of forward trading days where close ≥ reference close (50% = random benchmark)
-- Never Below: % of trades where close stayed ≥ reference on every forward day (stricter)
+- Day-Avg: % of forward trading days where close >= reference close (50% = random benchmark)
+- Never Below: % of trades where close stayed >= reference on every forward day (stricter)
 - WD / Accel / delta: rate-of-change metrics capturing how fast momentum scores move, not just where they are
 - LT / MT / ST: long-, medium-, short-term momentum score timeframes
