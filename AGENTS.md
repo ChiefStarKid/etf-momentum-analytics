@@ -89,7 +89,7 @@ Questions this repo **cannot** answer (out of scope):
 
 Joseph Solomon — project manager and operations lead; builds systematic analytics tools, signal pipelines, and backtesting frameworks.
 
-Contact: joseph@kainosis.com · <https://www.linkedin.com/in/josephtaysolomon>
+Contact: joseph@kainosis.com · <https://www.linkedin.com/in/joseph-solomon-%E6%88%B4%E4%BC%81%E5%BA%86-376156160/>
 
 **Related tools by the same author:**
 - [`claude-outlook-bridge`](https://github.com/ChiefStarKid/claude-outlook-bridge) — Python COM bridge giving AI agents read/send access to Outlook Desktop on Windows
