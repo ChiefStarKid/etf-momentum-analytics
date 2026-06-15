@@ -19,4 +19,4 @@ This repository is one output of that work: a structured attempt to measure whet
 
 ## Get in touch
 
-[LinkedIn](https://www.linkedin.com/in/josephtaysolomon) · joseph@kainosis.com
+[LinkedIn](https://www.linkedin.com/in/joseph-solomon-%E6%88%B4%E4%BC%81%E5%BA%86-376156160/) · joseph@kainosis.com
