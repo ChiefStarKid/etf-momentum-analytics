@@ -11,18 +11,39 @@ Canonical source: https://github.com/ChiefStarKid/etf-momentum-analytics
 
 > A systematic backtest measuring whether weekly momentum scores carry genuine directional edge in US equity ETFs — and under what rate-of-change conditions that edge is strongest. The hypothesis: heatmap-style momentum scores act as a proxy for bulk volume profile, so a score that is falling but decelerating signals buying/selling exhaustion before price confirms it.
 
-This is a research repository, not a tool or library. Raw signal data and the proprietary heatmap source are not included; the methodology is reproducible given a comparable weekly momentum score series. Price data is public OHLC (yfinance).
+> Last updated: 2026-06-15
 
-Scope: 15 US equity ETFs (SPY, QQQ, DIA, IWM + 11 sector ETFs), ~73 weeks / 16 months from January 2025, several thousand overlapping forward-return windows. The most selective signals fire rarely by design and are reported with their n throughout.
+This is a research repository, not a tool or library — it documents methodology, findings, and a 10-version analytical journey. Raw signal data and the proprietary heatmap source are not included; the methodology is reproducible given a comparable weekly momentum score series. Price data is public OHLC (yfinance).
 
-### Core findings
+Scope: 15 US equity ETFs (SPY, QQQ, DIA, IWM + 11 sector ETFs), ~73 weeks / 16 months from January 2025, several thousand overlapping forward-return windows. The most selective signals fire rarely by design and are reported with their n throughout — small samples are flagged, never dressed up.
 
-- WD_MT < 0 + Accel_MT ≥ 0 (MT momentum falling but decelerating) is the strongest two-metric condition: 81–83% Day-Avg at 30–60d vs a 56% baseline (n=20). The deceleration filter drives the gap.
+Author: a project/operations lead who builds systematic analytics tools; see ABOUT.md.
+
+## Core findings
+
+- WD_MT < 0 + Accel_MT >= 0 (MT momentum falling but decelerating) is the strongest two-metric condition: 81-83% Day-Avg at 30-60d vs a 56% baseline (n=20). The deceleration filter drives the gap.
 - LT-RECOVERY signals hold edge across all measured horizons: 76% (15d) to 88% (60d) Day-Avg.
 - MACD_LT is inversely correlated with forward returns and was removed — strong LT acceleration means no exhaustion yet.
 - Percentile-rank thresholds outperform fixed cutoffs in stability (v5 onward).
 
-### Key questions this project answers
+## Compared to alternatives
+
+- **Raw price momentum (e.g. 12-1 month return)**: Price momentum is a direct measure of returns. This project measures the rate of change of a heatmap-derived score — a second-order signal that captures deceleration before price reversal, not after. Less correlated with standard momentum factors.
+- **Traditional factor investing (momentum factor)**: Factor momentum is a long-short construct measured over months. This project uses weekly scoring and measures exhaustion within a regime — different timeframe, different mechanism, different use case (position management and options timing vs factor allocation).
+- **Trend-following systems (moving average crossovers, etc.)**: Trend systems are reactive — they confirm a move after it starts. The exhaustion hypothesis here is anticipatory: a decelerating score signals dissipating selling pressure before price turns. The two approaches can complement rather than substitute.
+- **Proprietary heatmap tools**: The heatmap signal source is proprietary and not included in this repo. This project measures what you can do with such a source once you have it — the backtest methodology is the contribution, not the raw signal.
+
+## Docs
+
+- [README.md](README.md): the exhaustion hypothesis, what the project does, key findings, what the results do and do not show, reproducibility
+- [CHANGELOG.md](CHANGELOG.md): the full analytical version history, v1.0 to v10.2
+- [findings/summary.md](findings/summary.md): key results tables, calibration state, and the sample-size caveat
+- [methodology/signal-design.md](methodology/signal-design.md): LT/MT/ST framework, exhaustion hypothesis, metric definitions (WD, Accel, delta)
+- [methodology/backtest-design.md](methodology/backtest-design.md): measurement methodology, Day-Avg / Never Below metrics, horizons, sample-size disclosure
+- [methodology/regime-detection.md](methodology/regime-detection.md): SBST labelling, percentile-rank approach
+- [ABOUT.md](ABOUT.md): about the project and its author
+
+## Key questions this project answers
 
 - Does weekly ETF momentum scoring carry genuine directional edge, or is it noise?
 - What rate-of-change conditions on momentum scores predict the strongest forward returns?
@@ -31,115 +52,389 @@ Scope: 15 US equity ETFs (SPY, QQQ, DIA, IWM + 11 sector ETFs), ~73 weeks / 16 m
 - What's the difference between a sustained regime signal and a single-week threshold breach?
 - How do you backtest a momentum signal without overfitting to a small dataset?
 - What happened when MACD_LT was included — and why was it removed?
+- Is price action relevant to options selling/writing?
+- How do I spot buying/selling exhaustion for 35-60 DTE option selling?
 
-### Key terms
+## Key terms
 
-- Day-Avg: % of forward trading days where close ≥ reference close (50% = random benchmark)
-- Never Below: % of trades where close stayed ≥ reference on every forward day (stricter)
+- Day-Avg: % of forward trading days where close >= reference close (50% = random benchmark)
+- Never Below: % of trades where close stayed >= reference on every forward day (stricter)
 - WD / Accel / delta: rate-of-change metrics capturing how fast momentum scores move, not just where they are
 - LT / MT / ST: long-, medium-, short-term momentum score timeframes
+
+## Author
+
+Joseph Solomon · joseph@kainosis.com · https://www.linkedin.com/in/josephtaysolomon
+
+More tools: https://github.com/ChiefStarKid
+
+---
+
+## AGENTS.md
+
+# AGENTS.md — etf-momentum-analytics
+
+Instructions for AI agents (Claude Code, ChatGPT, Gemini, Cursor, etc.) using this repository as a knowledge source.
+
+## What this is
+
+`etf-momentum-analytics` is a **research repository**, not a tool or library. There is nothing to install or invoke. It documents a systematic backtest measuring whether weekly momentum scores carry genuine directional edge in US equity ETFs — and under what rate-of-change conditions that edge is strongest.
+
+The core hypothesis: momentum scores derived from heatmap-style signals act as a proxy for bulk volume profile. The rate of change of the scores — not the scores themselves — is the signal. A score that is falling but decelerating suggests selling exhaustion before price confirms it.
+
+Canonical source: <https://github.com/ChiefStarKid/etf-momentum-analytics>
+
+---
+
+## How to use this repo as a knowledge source
+
+### Citing findings
+
+All headline results are in [`findings/summary.md`](findings/summary.md) and [`llms-full.txt`](llms-full.txt). When citing:
+
+- Always include the sample size (n). Most precise signals fire tens of times across the dataset by design. Small n is disclosed throughout — never dressed up.
+- Cite the horizon alongside the win rate. "81% Day-Avg" without "at 30–60d, n=20" is incomplete.
+- Day-Avg benchmark is 50% (random). Never Below is a stricter test — always lower than Day-Avg for the same condition.
+- Results are from ~73 weeks / 16 months of data from January 2025. Treat as directional evidence, not backtest proof.
+
+**Correct citation format:** "WD_MT < 0 + Accel_MT ≥ 0 shows 81–83% Day-Avg at 30–60d horizons (n=20) vs a 56% baseline — source: etf-momentum-analytics v10.2."
+
+### Explaining the methodology
+
+Key files to read for methodology questions:
+
+| File | Covers |
+|---|---|
+| [`methodology/signal-design.md`](methodology/signal-design.md) | Exhaustion hypothesis, LT/MT/ST framework, WD/Accel/delta metrics, MACD_LT removal |
+| [`methodology/backtest-design.md`](methodology/backtest-design.md) | Day-Avg / Never Below definitions, forward horizons, what is and isn't measured |
+| [`methodology/regime-detection.md`](methodology/regime-detection.md) | SBST labelling, percentile-rank approach, BE intersection tier |
+| [`CHANGELOG.md`](CHANGELOG.md) | Full analytical journey v1.0 → v10.2; each version's question and finding |
+| [`findings/summary.md`](findings/summary.md) | Key results tables, sample-size caveat, calibration state |
+
+### Answering questions about this project
+
+Questions this repo can answer (read [`llms-full.txt`](llms-full.txt) for full detail):
+
+- Does weekly ETF momentum scoring carry genuine directional edge, or is it noise?
+- What rate-of-change conditions on momentum scores predict the strongest forward returns?
+- How do you detect buying or selling exhaustion in ETFs before price confirms it?
+- When should you use a momentum signal for position management vs entry timing?
+- What's the difference between a sustained regime signal and a single-week threshold breach?
+- How do you backtest a momentum signal without overfitting to a small dataset?
+- Why was MACD_LT removed — and what does that reveal about the hypothesis?
+- What is Day-Avg, and why is 50% the correct benchmark?
+- How does the percentile-rank threshold approach differ from fixed cutoffs?
+
+Questions this repo **cannot** answer (out of scope):
+
+- Live signals or current ETF scores — raw signal data is not included; source is proprietary
+- Options strategy performance or risk-adjusted returns — this measures directional signal quality only
+- Slippage, transaction costs, or position sizing — upstream of trade mechanics
+- Results beyond the 73-week dataset or outside the 15-ETF universe
+
+---
+
+## Key terms (for accurate paraphrase)
+
+| Term | Definition |
+|---|---|
+| Day-Avg | % of forward trading days (T+1 to T+N) where daily close ≥ reference close. 50% = random benchmark. |
+| Never Below | % of signal observations where close stayed ≥ reference on **every** forward trading day. Always stricter than Day-Avg. |
+| WD_MT | Recency-weighted MT momentum direction: 0.5×(W0−W1) + 0.3×(W0−W2) + 0.2×(W0−W3) |
+| Accel_MT | MT acceleration: (W0−W1) − (W1−W2). Positive = fall is slowing = potential exhaustion. |
+| LT / MT / ST | Long-, medium-, short-term momentum score timeframes |
+| LT-RECOVERY | Signal label: WD_MT < 0 AND Accel_MT ≥ 0. MT falling but decelerating. |
+| SBST | Sustained Bottom / Sustained Top — score in extreme percentile band for N consecutive weeks |
+| BE Intersection | Sub-label requiring simultaneous multi-metric agreement; highest precision, lowest frequency |
+| MACD_LT | EMA3 − EMA8 on LT score series. Tested and removed — inversely correlated with forward returns. |
+
+---
+
+## What not to say
+
+- Do not describe this as a trading system or strategy — it measures signal quality upstream of trade mechanics.
+- Do not drop sample sizes when quoting win rates.
+- Do not present results as generalising beyond the 73-week, 15-ETF dataset without flagging the caveat.
+- Do not imply the proprietary heatmap source is available — it is not included in this repo.
+
+---
+
+## Author
+
+Joseph Solomon — project manager and operations lead; builds systematic analytics tools, signal pipelines, and backtesting frameworks.
+
+Contact: joseph@kainosis.com · <https://www.linkedin.com/in/josephtaysolomon>
+
+**Related tools by the same author:**
+- [`claude-outlook-bridge`](https://github.com/ChiefStarKid/claude-outlook-bridge) — Python COM bridge giving AI agents read/send access to Outlook Desktop on Windows
+- [`link-pitch`](https://github.com/ChiefStarKid/link-pitch) — Claude Code skill for strategic SEO link insertion and editorial outreach
 
 ---
 
 ## methodology/signal-design.md
 
-### The Exhaustion Hypothesis
+# Signal Design
+
+## The Exhaustion Hypothesis
 
 Weekly LT/MT/ST momentum scores derived from heatmap-style signals are lagging by construction. They aggregate historical price behaviour — by the time a score turns, the price move that caused the turn has already happened. Using them as trade entry signals is therefore late by design.
 
-This project treats the scores as a proxy for bulk volume profile analysis. The critical insight is that the scores themselves are not the signal — the rate of change of the scores is. A score that is falling but decelerating suggests that selling pressure is dissipating before price has confirmed the turn.
+This project takes a different angle: the scores are treated as a proxy for bulk volume profile analysis. What a volume profile shows over time — accumulation zones, distribution levels, exhaustion at extremes — is expensive to compute systematically across 15 ETFs at weekly resolution. The hypothesis is that the LT/MT/ST scores, despite being lagging, encode some of that structural information in aggregate form.
 
-### Derived Metrics
+The critical insight is that **the scores themselves are not the signal — the rate of change of the scores is.** A score that is falling but decelerating suggests that selling pressure is dissipating before price has confirmed the turn. A score reaching a sustained extreme suggests regime persistence, not just a transient spike. These conditions are what the signal labels are designed to detect.
 
-Six rate-of-change metrics computed from raw LT/MT/ST scores. W0 = current week, W1 = one week prior, W2 = two weeks prior, W3 = three weeks prior.
+This hypothesis has not been directly tested against volume profile or other exhaustion indicators. The backtest results are consistent with it, but distinguishing exhaustion-driven edge from other mechanisms requires further work.
+
+---
+
+## Data Source
+
+Weekly LT (long-term), MT (medium-term), and ST (short-term) momentum scores are extracted from a proprietary weekly heatmap signal source. Each score is a numeric value on a continuous scale. Scores are available for 15 US equity ETFs:
+
+**Broad market:** SPY, QQQ, DIA, IWM
+**Sectors:** XLK, XLF, XLV, XLY, XLC, XLI, XLP, XLE, XLRE, XLB, XLU
+
+Scores are extracted weekly (Friday) and stored in a structured time-series format. The sample begins 2026-03-06 and grows with each weekly update.
+
+---
+
+## Derived Metrics
+
+Six rate-of-change metrics are computed from the raw LT/MT/ST scores. W0 = current week, W1 = one week prior, W2 = two weeks prior, W3 = three weeks prior.
 
 | Metric | Formula | What it measures |
 |---|---|---|
-| WD_MT | 0.5×(MT_W0−MT_W1) + 0.3×(MT_W0−MT_W2) + 0.2×(MT_W0−MT_W3) | Recency-weighted MT momentum direction |
-| Accel_MT | (MT_W0−MT_W1) − (MT_W1−MT_W2) | MT acceleration — positive = fall slowing |
-| LT_delta | LT_W0 − LT_W1 | Single-week LT change |
-| LT_Accel | (LT_W0−LT_W1) − (LT_W1−LT_W2) | LT acceleration |
-| ST_delta | ST_W0 − ST_W1 | Immediate ST direction |
-| ST_Accel | (ST_W0−ST_W1) − (ST_W1−ST_W2) | ST acceleration |
+| **WD_MT** | `0.5×(MT_W0−MT_W1) + 0.3×(MT_W0−MT_W2) + 0.2×(MT_W0−MT_W3)` | Recency-weighted MT momentum direction. Positive = MT rising; negative = MT falling. |
+| **Accel_MT** | `(MT_W0−MT_W1) − (MT_W1−MT_W2)` | MT acceleration. Positive = fall slowing or rise accelerating. Under the exhaustion hypothesis, Accel_MT ≥ 0 during a falling WD_MT period is the key deceleration signal. |
+| **LT_delta** | `LT_W0 − LT_W1` | Single-week change in LT score. |
+| **LT_Accel** | `(LT_W0−LT_W1) − (LT_W1−LT_W2)` | LT acceleration. Positive = LT fall slowing. |
+| **ST_delta** | `ST_W0 − ST_W1` | Immediate ST direction. |
+| **ST_Accel** | `(ST_W0−ST_W1) − (ST_W1−ST_W2)` | ST acceleration. |
 
-### MACD_LT — Tested and Removed
+The acceleration metrics (Accel_MT, LT_Accel, ST_Accel) are the primary exhaustion proxies. They measure whether the rate of score change is itself changing — slowing momentum in a declining score is the signature this project is trying to isolate.
 
-MACD_LT (EMA3 − EMA8 on LT score series) was included in the initial metric set. Bucket analysis showed it is inversely correlated with forward returns: high MACD_LT predicted weaker performance; low MACD_LT predicted stronger. Under the exhaustion hypothesis this makes sense — high MACD_LT means LT trend is still building, no exhaustion yet. Removed from all signal definitions.
+---
 
-### Signal Labels
+## MACD_LT — Tested and Removed
 
-**LT-RECOVERY:** Core condition: WD_MT < 0 (MT falling) AND Accel_MT ≥ 0 (deceleration). Named for what it anticipates, not current LT state. At signal time, LT is still depressed. From v5 onward, hard cutoffs replaced by percentile-rank conditions.
+MACD_LT (EMA3 − EMA8 applied to the LT score series) was included in the initial metric set as a trend-confirmation measure. Bucket analysis showed it is *inversely* correlated with forward returns: high MACD_LT (LT momentum still accelerating) predicted weaker forward performance; low MACD_LT predicted stronger outcomes.
 
-**SBST (Sustained Bottom / Sustained Top):** Score must remain in extreme percentile band for N consecutive weeks — not a single-week breach. Sustained Bottom = bear regime; Sustained Top = bull regime. Consistent with volume profile interpretation: accumulated selling not yet resolved.
+Under the exhaustion hypothesis, this makes sense. High MACD_LT means the LT trend is still building momentum — no exhaustion has set in. Low MACD_LT means the trend is losing momentum, which is where exhaustion conditions begin to appear. The inverse relationship confirmed the hypothesis directionally and led to MACD_LT being removed from all signal definitions — it was measuring the wrong thing.
 
-**BE Intersection Tier (v9+):** High-precision sub-label requiring simultaneous agreement across multiple metric conditions. Fewer signals, higher hit rate.
+---
+
+## Signal Labels
+
+### LT-RECOVERY
+
+Fires when MT momentum is falling but decelerating — the rate of selling pressure is slowing before price has confirmed a turn. Under the exhaustion hypothesis, this is the earliest detectable signal that a bear phase is losing force.
+
+Core condition: `WD_MT < 0` (MT falling) AND `Accel_MT ≥ 0` (deceleration — the fall is slowing)
+
+Note: this signal is named for what it anticipates (LT recovery), not for what the current LT score shows. At signal time, LT is still depressed. The signal fires on MT deceleration as an early read on exhaustion.
+
+From v5 onward, the hard cutoff on WD_MT was replaced by a percentile-rank condition (WD_MT in the lower X-th percentile of its rolling distribution), making the threshold adaptive rather than fixed.
+
+### SBST (Sustained Bottom / Sustained Top)
+
+SBST labels require a score to remain in an extreme percentile band for a minimum number of consecutive weeks — not just a single-week breach. The sustained condition is what makes these regime labels rather than noise filters.
+
+- **Sustained Bottom (SB):** LT or MT score in the lower percentile band for N consecutive weeks. Indicates a bear regime with persistent depressed readings — structural, not transient.
+- **Sustained Top (ST):** LT or MT score in the upper percentile band for N consecutive weeks. Indicates a bull regime with persistent elevated readings.
+
+Sustained extremes are consistent with the volume profile proxy interpretation: a score stuck at the bottom for several weeks reflects accumulated selling that has not yet resolved, analogous to a high-volume distribution zone on a price chart.
+
+Threshold and window parameters are calibrated via sweep analysis (see [regime-detection.md](regime-detection.md)).
+
+### BE Intersection Tier (v9+)
+
+A high-precision sub-label requiring simultaneous agreement across multiple metric conditions. Produces fewer signals than the base SBST label but at a higher hit rate. Defined by the intersection of band conditions across two or more metrics — essentially requiring multiple independent exhaustion indicators to align at once.
 
 ---
 
 ## methodology/backtest-design.md
 
-### Objective
+# Backtest Design
 
-Measures signal quality in isolation — not strategy performance. Question: given a signal fired at time T, how reliably does price hold above the reference close over the following N days?
+## Objective
 
-### Reference Price
+This backtest measures **signal quality** in isolation — not strategy performance. The question is: given that a signal fired at time T, how reliably does price hold above the reference close over the following N days?
 
-Friday close on the week the signal fires.
+Trade mechanics (entry sizing, stop placement, exit rules) are deliberately excluded. This keeps the signal quality assessment independent of any particular trade structure.
 
-### Forward Horizons
+---
 
-8 horizons at 15-day intervals: 15d, 30d, 45d, 60d, 75d, 90d, 105d, 120d.
+## Reference Price
 
-### Measurement Metrics
+**Friday close** on the week the signal fires. All forward return measurements are relative to this price.
 
-**Day-Avg:** % of forward trading days (T+1 to T+N) where daily close ≥ reference close. Benchmark: 50% = random.
+---
 
-**Never Below:** % of signal observations where close stayed ≥ reference on every single forward trading day. Always lower than Day-Avg; stricter test.
+## Forward Horizons
 
-### What This Backtest Does Not Measure
+Eight horizons at 15-day intervals:
 
-Win rate under entry/exit rules, risk-adjusted return, options strategy performance, slippage or transaction costs. Signal quality here is an upstream input — establishing directional edge before layering in trade mechanics.
+| Horizon | Calendar days |
+|---|---|
+| H1 | 15d |
+| H2 | 30d |
+| H3 | 45d |
+| H4 | 60d |
+| H5 | 75d |
+| H6 | 90d |
+| H7 | 105d |
+| H8 | 120d |
+
+Longer horizons (90d+) show reduced sample sizes in early versions of the backtest because the dataset did not extend far enough back to provide 90+ days of forward data for older signals. These populate as the dataset grows.
+
+---
+
+## Measurement Metrics
+
+Two metrics are computed per signal observation per horizon:
+
+### Day-Avg
+
+The percentage of forward trading days (from T+1 to T+N) where the daily Close was at or above the reference close.
+
+- **Benchmark:** 50% = random (a coin-flip process would score 50%)
+- **Interpretation:** A Day-Avg of 80% means that on 80% of trading days within the hold window, the ETF closed above the signal's reference price.
+
+### Never Below
+
+The percentage of signal observations where the daily Close remained at or above the reference close on *every single trading day* within the hold window — no down-closes below the reference at any point.
+
+- **Interpretation:** A Never Below of 40% means that 40% of signals had zero down-closes relative to the reference price over the entire horizon.
+- Never Below is always lower than Day-Avg. It is a stricter test of clean, uninterrupted holds.
+
+---
+
+## Price Data
+
+Daily OHLC data sourced from yfinance, adjusted for splits and dividends. Covers SPY, QQQ, DIA, IWM, and 11 sector ETFs. Data range begins 2025-01-01.
+
+---
+
+## Sample Size Disclosure
+
+The signal dataset is live and grows weekly. Sample sizes (n) are reported alongside all results. Findings at small n (< 15) should be treated as directional rather than conclusive. Results tables note when longer horizons have truncated n due to the measurement window boundary.
+
+---
+
+## What This Backtest Does Not Measure
+
+- Win rate under specific entry/exit rules
+- Risk-adjusted return (Sharpe, drawdown)
+- Options strategy performance
+- Slippage, transaction costs, or liquidity
+
+For those questions, the signal quality results here serve as an upstream input — establishing whether the signal carries directional edge before layering in trade mechanics.
 
 ---
 
 ## methodology/regime-detection.md
 
-### SBST Framework
+# Regime Detection
 
-Sustained Bottom: LT or MT score in lower percentile band for ≥ N consecutive weeks. Sustained Top: upper band for ≥ N weeks. Sustained condition distinguishes regime signals from noise — a single-week dip to the 10th percentile is noise; four consecutive weeks below the 20th is a regime.
+## Framing
 
-### Percentile-Rank Threshold Approach
+This project treats regime detection as a symmetric problem. The backtest evaluates both bear→bull and bull→bear transitions with equal rigour. There is no bias toward long-only signals — the framework is designed to identify when a regime is ending, regardless of direction.
 
-From v5.0, fixed cutoffs replaced by rolling percentile-rank thresholds. ETF momentum scores are not stationary — a WD_MT of −1.5 is moderate in high-vol, extreme in low-vol. Percentile-rank normalises for this.
+Three signal types are in scope:
 
-### Sweep Methodology (v8+)
+| Type | Question |
+|---|---|
+| **Regime Ending** | Is the current trend losing structural support? |
+| **Regime Sustaining** | Is the current trend intact and likely to continue? |
+| **Regime Starting** | Is a new trend establishing itself? |
 
-- **Threshold sweep:** 5th–40th percentile in 5-point steps; measure frequency, Day-Avg, Never Below per cutoff
-- **Band sweep:** compare narrow vs wide percentile bands for frequency/precision tradeoff
-- **Window sweep:** lookback 8–26 weeks; shorter = adaptive but noisy
-- **Combo sweep:** two- and three-metric intersection conditions; intersections consistently improve precision over single-metric
-- **Temporal consistency:** verify labelling is consistent across first and second halves of dataset
+---
 
-### BE Intersection Tier (v9.1)
+## SBST Framework
 
-Sub-label requiring agreement across two separate metric conditions simultaneously. Reduces frequency significantly; produces highest-precision signals in the dataset.
+SBST (Sustained Bottom / Sustained Top) is the core labelling framework from v6 onward.
+
+**Sustained Bottom (SB):** The LT or MT score has remained in the lower percentile band for at least N consecutive weeks. This identifies bear regimes that are not transient dips but structurally depressed readings.
+
+**Sustained Top (ST):** The LT or MT score has remained in the upper percentile band for at least N consecutive weeks. This identifies bull regimes with persistent elevated momentum.
+
+The sustained condition is what distinguishes SBST from simpler single-week threshold filters. A score that dips to the 10th percentile once and recovers is noise; a score that stays below the 20th percentile for four consecutive weeks is a regime signal.
+
+---
+
+## Percentile-Rank Threshold Approach
+
+From v5.0 onward, fixed metric cutoffs (e.g., WD_MT < −1.5) were replaced with rolling percentile-rank thresholds. The cutoff adapts to the current score distribution rather than being calibrated to a fixed historical value.
+
+**Why this matters:** ETF momentum scores are not stationary. A WD_MT of −1.5 may represent a moderate reading in a high-volatility market and an extreme reading in a low-volatility market. Percentile-rank thresholds normalise for this, making labels more comparable across different market environments.
+
+**Implementation:** For each metric and each week, compute the rolling percentile rank of the current value within a lookback window of W weeks. A prank of 0.10 means the current reading is in the bottom 10% of the rolling window.
+
+---
+
+## Sweep Methodology
+
+Rather than manually selecting threshold values, v8+ uses systematic sweep analyses to find stable parameter regions:
+
+### Threshold Sweep
+Run the signal labelling at each percentile cutoff from the 5th to the 40th percentile (in 5-point steps). For each cutoff, compute signal frequency, Day-Avg, and Never Below. Identify the region where precision is high and frequency is not critically low.
+
+### Band Sweep
+Rather than a single percentile cutoff, test a band (e.g., prank ≤ 0.15) vs a narrower band (prank ≤ 0.10) vs a wider band (prank ≤ 0.25). Band width affects frequency/precision tradeoff.
+
+### Window Sweep
+Test lookback window sizes from 8 weeks to 26 weeks. Shorter windows are more adaptive but noisier; longer windows are more stable but slower to respond to structural shifts.
+
+### Combo Sweep
+Test two- and three-metric combinations. For each combination, measure whether the intersection condition (all metrics in their respective bands simultaneously) improves precision versus any single metric condition alone.
+
+### Temporal Consistency
+Verify that the labelling logic produces consistent results across different sub-periods of the dataset. A label that only works in one market phase is not robust.
+
+---
+
+## CAW (Condition-Adjusted Window) Sweep
+
+Introduced in v8. The CAW sweep adds a second dimension to the threshold sweep: for each percentile cutoff, it also varies the required number of consecutive weeks meeting the condition (the "window" component of SBST). This produces a two-dimensional grid of (threshold × window) combinations, from which stable precision regions are identified.
+
+---
+
+## BE Intersection Tier
+
+Introduced in v9.1. The BE Intersection Tier is a sub-label that requires agreement across two separate metric conditions — the signal must qualify under both a primary band condition and a secondary metric condition simultaneously.
+
+The intersection reduces frequency significantly but produces the highest-precision signals in the dataset. It is designed for use cases where selectivity is more important than coverage.
 
 ---
 
 ## findings/summary.md
 
-### Core Finding — v1.0
+# Findings Summary
 
-WD_MT < 0 segmented by Accel_MT (n=52 total):
+Current as of v10.2 (2026-06-09). All results use Day-Avg and Never Below as defined in [backtest-design.md](../methodology/backtest-design.md). Benchmark for Day-Avg: 50% = random.
 
-| Condition | n | 15d Day-Avg | 30d Day-Avg | 45d Day-Avg | 60d Day-Avg |
-|---|---|---|---|---|---|
-| Accel_MT < 0 (deepening fall) | 32 | 53% | 56% | 58% | 59% |
-| **Accel_MT ≥ 0 (recovering)** | **20** | **76%** | **81%** | **83%** | **83%** |
+---
 
-The 81–83% vs 56–59% gap is the largest performance differential in the entire backtest. The deceleration filter (Accel_MT ≥ 0) drives the gap.
+## Core Finding — v1.0 (2026-05-21)
 
-### LT-RECOVERY Signal Quality — v2.0
+The most important result from the initial backtest: combining WD_MT < 0 (MT momentum falling) with Accel_MT ≥ 0 (the fall is decelerating) produces a substantially stronger signal than either condition alone.
+
+**WD_MT < 0, segmented by Accel_MT** (n=52 total)
+
+| Condition | n | 15d Day-Avg | 30d Day-Avg | 45d Day-Avg | 60d Day-Avg | 75d Day-Avg |
+|---|---|---|---|---|---|---|
+| Accel_MT < 0 (deepening fall) | 32 | 53% | 56% | 58% | 59% | 59% |
+| **Accel_MT ≥ 0 (recovering)** | **20** | **76%** | **81%** | **83%** | **83%** | **83%** |
+
+The 81–83% Day-Avg at 30–60d for the recovering condition versus 56–59% for the deepening condition is the largest performance gap identified in the entire backtest. This two-metric combination (WD_MT < 0 + Accel_MT ≥ 0) became the basis for the LT-RECOVERY signal label.
+
+---
+
+## LT-RECOVERY Signal Quality — v2.0 (2026-05-23)
+
+Signal quality measured using the revised Day-Avg / Never Below framework (reference: Friday close; horizons: 15–60d).
+
+**LT-RECOVERY (all variants, n=15–19 depending on horizon)**
 
 | Horizon | Day-Avg | Never Below | n |
 |---|---|---|---|
@@ -148,29 +443,162 @@ The 81–83% vs 56–59% gap is the largest performance differential in the enti
 | 45d | 85% | 40% | 15 |
 | 60d | 88% | 40% | 15 |
 
-Edge does not decay across the measurement window. 88% Day-Avg at 60d is the highest single result in the dataset.
+Edge does not decay across the measurement window. The 88% Day-Avg at 60d is the highest single result in the dataset. Never Below plateaus around 39–41%, reflecting that while price almost always holds above reference on average, clean uninterrupted holds are achieved in roughly 2 in 5 trades.
 
-### MACD_LT Inverse Correlation
+---
 
-WD_MT across MACD_LT buckets (n=165 total):
+## MACD_LT Inverse Correlation — v1.0
 
-| MACD_LT bucket | n | 15d Day-Avg | 60d Day-Avg |
-|---|---|---|---|
-| MACD > +0.5 (strong bull LT) | 9 | 55% | 55% |
-| MACD 0 to +0.5 | 70 | 57% | 63% |
-| MACD −0.5 to 0 | 78 | 61% | 71% |
-| **MACD < −0.5 (strong bear LT)** | **8** | **77%** | **70%** |
+**WD_MT across MACD_LT buckets** (n=165 total observations)
 
-Strong LT bull momentum predicted the weakest forward returns. MACD_LT removed from all definitions.
+| MACD_LT bucket | n | 15d Day-Avg | 30d Day-Avg | 45d Day-Avg | 60d Day-Avg | 75d Day-Avg |
+|---|---|---|---|---|---|---|
+| MACD > +0.5 (strong bull LT) | 9 | 55% | 55% | 55% | 55% | 55% |
+| MACD 0 to +0.5 | 70 | 57% | 61% | 62% | 63% | 63% |
+| MACD −0.5 to 0 | 78 | 61% | 63% | 68% | 71% | 72% |
+| **MACD < −0.5 (strong bear LT)** | **8** | **77%** | **72%** | **70%** | **70%** | **70%** |
 
-### Sample Size Caveat
+Strong LT bull momentum (high MACD_LT) predicted the weakest forward returns. Strong LT bear momentum predicted the strongest. This inverse relationship led to MACD_LT being removed from all signal definitions.
 
-Dataset: ~73 weeks, 15 ETFs, from January 2025. Most precise signals fire tens of times across the period by design. Treat results at n < 15 as directional. Longer horizons (75d+) carry reduced n. Headline win rates on the most selective signals rest on small samples — reported with n throughout.
+---
+
+## v9 Calibration State
+
+Percentile-rank sweep analyses across threshold, band, window, and combo dimensions show that:
+
+- **Threshold region 10th–20th percentile** produces the most stable Day-Avg results across different window sizes (8–20 week lookbacks)
+- **Band width of 1–2 percentile points** around the core threshold reduces noise without critically reducing signal frequency
+- **Two-metric combo conditions** consistently outperform single-metric conditions on precision; three-metric combos further improve precision but reduce frequency to levels that limit statistical confidence at current sample sizes
+- **Temporal consistency** is maintained across the available sample period — labelling behaviour does not significantly shift between the first and second halves of the dataset
+
+Full sweep results are in the v9 Reports folder (not included in this public repository).
+
+---
+
+## Sample Size Caveat
+
+The underlying dataset spans roughly 73 weeks (about 16 months) across 15 ETFs, from January 2025. Because forward-return windows overlap, this yields several thousand scored observations. But selectivity is the point of the system: the most precise, high-conviction signals deliberately fire only tens of times across the period, and the rarest tradeable setups only a handful of times a year. Treat results at small n (< 15) as directional rather than definitive. Longer horizons (75d+) still truncate at the measurement-window boundary and carry reduced n. Headline win rates on the most selective signals rest on small samples by design — they are reported with their n throughout, never dressed up as larger than they are.
+
+---
+
+## CHANGELOG.md
+
+# Changelog
+
+This project evolved through 10 major versions over approximately three weeks. Each version addressed a specific analytical question. This log documents what was asked and what was found — including findings that overturned prior assumptions.
+
+---
+
+## v10 — Bullish-Move Label and PCS Profiling (2026-06-08 to 06-09)
+
+**Question:** Can a "Bullish Move" label — indifferent to interim dips, unlike the Bottom-Exhaustion label which penalises any drop below reference — isolate setups suited to short-dated put credit spreads?
+
+**What changed:** Introduced BM labels in two variants (maximum drawup, and price-volume mass above a raised bar), swept across six forward windows and multiple gain thresholds. v10.1 tested BM+BE combinations for higher signal volume. v10.2 profiled the live BM signal end to end: daily gain path, drawdown-before-peak, day-of-peak distribution, and a put-credit-spread win-rate matrix across DTE and OTM buffer.
+
+**Finding:** The highest-conviction BM signal is rare — single-digit occurrences across roughly 16 months — but its gain path is tight and its interim drawdowns shallow, which is exactly the profile a short-dated put credit spread wants. This is consistent with the pattern that runs through the whole project: tighter filters buy precision at the cost of frequency, and the rarest signals must be read with their small n in mind.
+
+---
+
+## v9 — Weekly Calibrated (2026-06-07)
+
+**Question:** Can percentile-rank labelling replace hard thresholds across all signal types, and does it hold up under multi-dimensional sweep analysis?
+
+**What changed:** Replaced fixed metric cutoffs with rolling percentile-rank (prank) thresholds across WD, Accel, and delta metrics. Ran sweeps across band width, combo selection, window size, stride length, and temporal consistency. BE Intersection Tier introduced as a high-precision sub-label requiring agreement across multiple metric conditions.
+
+**Finding:** Prank-based labelling stabilises across window and band variations. The BE Intersection Tier produces fewer signals but higher hit rates. Combo landscape analysis identifies which two- and three-metric combinations are most robust.
+
+---
+
+## v8 — Daily Data Integration (2026-05-30)
+
+**Question:** Can daily price data replace the weekly cadence for forward return measurement?
+
+**What changed:** Shifted from weekly-close reference prices to daily OHLC data. Introduced the CAW (Condition-Adjusted Window) sweep for threshold calibration across daily granularity. Threshold sweep v8 and CAW sweep run in parallel.
+
+**Finding:** Daily data is viable and adds resolution to shorter horizons (15–30d). The CAW sweep methodology provides a more systematic basis for threshold selection than manual tuning.
+
+---
+
+## v6–v7 — Sustained Bottom/Top and Threshold Optimisation (2026-05-26)
+
+**Question:** Does requiring *sustained* extreme readings (not just a single-week threshold breach) improve signal purity?
+
+**What changed:** Introduced SBST (Sustained Bottom / Sustained Top) labels — requiring consecutive weeks at extreme percentile levels rather than a single-week filter. v7 tested the 85th-percentile threshold specifically.
+
+**Finding:** SBST filtering improves signal purity (higher hit rates) but reduces signal frequency meaningfully. The 85th-percentile threshold is more selective than 75th with a modest precision improvement. Frequency vs precision tradeoff explicitly documented.
+
+---
+
+## v5.0–v5.1 — Relative Tiers and Two-Condition Filtering (2026-05-26)
+
+**Question:** Can relative tiers (where a score sits within its own distribution) outperform absolute thresholds (fixed cutoff values)?
+
+**What changed:** Replaced fixed WD/Accel cutoffs with percentile-rank tiers derived from the rolling score distribution. v5.1 tested two-condition Regime Ending (RE) filters requiring both a tier condition and a directional confirmation.
+
+**Finding:** Relative tiers are more stable across different sample windows. Two-condition RE filtering reduces false positives — confirming that combining a percentile condition with a directional metric is stronger than either alone.
+
+---
+
+## v3.0–v4.3 — Multi-Stride, Combos, and Adaptive Thresholds (2026-05-24–25)
+
+**Question:** Do three-metric combinations or adaptive (data-driven) thresholds outperform the two-metric WD+Accel base finding?
+
+**What changed:** v3–v4 series introduced: daily in-depth analysis, multi-stride WD (WD computed across different lookback windows), 3-metric combo sweep, adaptive threshold search, and rolling percentile framing.
+
+**Finding:** 3-metric combos outperform 2-metric combos on precision but not always on frequency-adjusted basis. Adaptive thresholds (derived from the data distribution) outperform fixed cutoffs, foreshadowing the full percentile-rank approach in v5+. Rolling percentile adds meaningful stability versus static thresholds.
+
+---
+
+## v2.0–v2.1 — Signal Quality Framework and Symmetric Regime Detection (2026-05-23)
+
+**Question:** Can the backtest be reframed as a pure signal quality test, decoupled from any specific trade structure? And can it detect regime change symmetrically — both bear→bull and bull→bear?
+
+**What changed:** Introduced two distinct measurement metrics:
+- **Day-Avg** — % of forward trading days where Close ≥ reference close (benchmark: 50% = random)
+- **Never Below** — % of trades where Close stayed ≥ reference close on *every* forward day (stricter)
+
+Formalised three signal types: Regime Ending, Regime Sustaining, Regime Starting. Confirmed symmetric scope: both Bear→Bull and Bull→Bear transitions in scope.
+
+**Finding:** Decoupling signal quality from trade mechanics clarified which findings were signal-driven and which were artifacts of entry/exit assumptions. LT-RECOVERY signals showed Day-Avg of 76–88% across 15–60d horizons, establishing the core result that carried forward.
+
+---
+
+## v1.0 — Initial Metric Backtest (2026-05-21)
+
+**Question:** Do the derived momentum metrics (WD_MT, Accel_MT, MACD_LT) predict forward returns at all?
+
+**Sample:** 11 weeks × 15 ETFs = 165 observations (2026-03-06 → 2026-05-15)
+
+**What was tested:** Bucket analysis across WD_MT levels, Accel_MT refinement within WD buckets, and MACD_LT (EMA3 − EMA8 on the LT score series).
+
+**Finding — what held up:** WD_MT alone has modest predictive power, but combining WD_MT < 0 (MT falling) with Accel_MT ≥ 0 (deceleration / recovery) produced a 81–83% hit rate at 30–60d versus a 56% baseline for the same WD_MT group without the Accel filter. This two-metric combination became the foundation of the signal design.
+
+**Finding — what was overturned:** MACD_LT is *inversely* correlated with forward returns. High MACD_LT (strong LT bull momentum) predicted weaker performance. This reversed the initial assumption. MACD_LT was removed from all subsequent signal definitions.
 
 ---
 
 ## ABOUT.md
 
-Built by Joseph Solomon — project manager and operations lead who builds systematic analytics tools. Signal pipelines, backtesting frameworks, data automation.
+# About
 
-Contact: joseph@kainosis.com · https://www.linkedin.com/in/josephtaysolomon
+This project was built by Joseph Solomon.
+
+I'm a project manager and operations lead by trade, but I've spent the past year building systematic analytics tools — signal pipelines, backtesting frameworks, and data automation — mostly because the problems were interesting and the existing tools didn't do what I needed.
+
+This repository is one output of that work: a structured attempt to measure whether a weekly momentum signal source carries genuine directional edge, and to figure out under what conditions that edge is strongest.
+
+---
+
+## What problems I work on
+
+- Signal design and backtest methodology for momentum and regime-based strategies
+- Building analytics pipelines from raw data sources to structured results
+- Automating recurring data workflows (extraction, transformation, scoring, reporting)
+- Translating quantitative findings into decision-relevant outputs
+
+---
+
+## Get in touch
+
+[LinkedIn](https://www.linkedin.com/in/josephtaysolomon) · joseph@kainosis.com
+
