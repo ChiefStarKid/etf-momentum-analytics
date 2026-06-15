@@ -2,6 +2,8 @@
 
 > A systematic backtest measuring whether weekly momentum scores carry genuine directional edge in US equity ETFs — and under what rate-of-change conditions that edge is strongest. The hypothesis: heatmap-style momentum scores act as a proxy for bulk volume profile, so a score that is falling but decelerating signals buying/selling exhaustion before price confirms it.
 
+> Last updated: 2026-06-15
+
 This is a research repository, not a tool or library — it documents methodology, findings, and a 10-version analytical journey. Raw signal data and the proprietary heatmap source are not included; the methodology is reproducible given a comparable weekly momentum score series. Price data is public OHLC (yfinance).
 
 Scope: 15 US equity ETFs (SPY, QQQ, DIA, IWM + 11 sector ETFs), ~73 weeks / 16 months from January 2025, several thousand overlapping forward-return windows. The most selective signals fire rarely by design and are reported with their n throughout — small samples are flagged, never dressed up.
@@ -15,10 +17,17 @@ Author: a project/operations lead who builds systematic analytics tools; see ABO
 - MACD_LT is inversely correlated with forward returns and was removed — strong LT acceleration means no exhaustion yet.
 - Percentile-rank thresholds outperform fixed cutoffs in stability (v5 onward).
 
+## Compared to alternatives
+
+- **Raw price momentum (e.g. 12-1 month return)**: Price momentum is a direct measure of returns. This project measures the rate of change of a heatmap-derived score — a second-order signal that captures deceleration before price reversal, not after. Less correlated with standard momentum factors.
+- **Traditional factor investing (momentum factor)**: Factor momentum is a long-short construct measured over months. This project uses weekly scoring and measures exhaustion within a regime — different timeframe, different mechanism, different use case (position management and options timing vs factor allocation).
+- **Trend-following systems (moving average crossovers, etc.)**: Trend systems are reactive — they confirm a move after it starts. The exhaustion hypothesis here is anticipatory: a decelerating score signals dissipating selling pressure before price turns. The two approaches can complement rather than substitute.
+- **Proprietary heatmap tools**: The heatmap signal source is proprietary and not included in this repo. This project measures what you can do with such a source once you have it — the backtest methodology is the contribution, not the raw signal.
+
 ## Docs
 
 - [README.md](README.md): the exhaustion hypothesis, what the project does, key findings, what the results do and do not show, reproducibility
-- [CHANGELOG.md](CHANGELOG.md): the full analytical version history, v1.0 to v10.2 — each version's question, what changed, and what was found (including findings that overturned prior assumptions)
+- [CHANGELOG.md](CHANGELOG.md): the full analytical version history, v1.0 to v10.2
 - [findings/summary.md](findings/summary.md): key results tables, calibration state, and the sample-size caveat
 - [methodology/signal-design.md](methodology/signal-design.md): LT/MT/ST framework, exhaustion hypothesis, metric definitions (WD, Accel, delta)
 - [methodology/backtest-design.md](methodology/backtest-design.md): measurement methodology, Day-Avg / Never Below metrics, horizons, sample-size disclosure
@@ -43,3 +52,9 @@ Author: a project/operations lead who builds systematic analytics tools; see ABO
 - Never Below: % of trades where close stayed >= reference on every forward day (stricter)
 - WD / Accel / delta: rate-of-change metrics capturing how fast momentum scores move, not just where they are
 - LT / MT / ST: long-, medium-, short-term momentum score timeframes
+
+## Author
+
+Joseph Solomon · joseph@kainosis.com · https://www.linkedin.com/in/josephtaysolomon
+
+More tools: https://github.com/ChiefStarKid
