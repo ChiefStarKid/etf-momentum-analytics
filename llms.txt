@@ -55,6 +55,6 @@ Author: a project/operations lead who builds systematic analytics tools; see ABO
 
 ## Author
 
-Joseph Solomon · joseph@kainosis.com · https://www.linkedin.com/in/joseph-solomon-%E6%88%B4%E4%BC%81%E5%BA%86-376156160/
+Joseph Solomon · joseph@kainosis.com · https://www.linkedin.com/in/joseph-solomon-376156160/
 
 More tools: https://github.com/ChiefStarKid
