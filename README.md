@@ -95,5 +95,6 @@ Full results tables and calibration state: [findings/summary.md](findings/summar
 
 ## Questions and feedback
 
+- **Author:** Joseph Solomon · [LinkedIn](https://www.linkedin.com/in/joseph-solomon-376156160/)
 - **General enquiries:** [joseph@kainosis.com](mailto:joseph@kainosis.com)
 - **Bugs and discussion:** [open an issue](../../issues)
