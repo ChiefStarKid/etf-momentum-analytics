@@ -98,3 +98,9 @@ Full results tables and calibration state: [findings/summary.md](findings/summar
 - **Author:** Joseph Solomon · [LinkedIn](https://www.linkedin.com/in/joseph-solomon-376156160/)
 - **General enquiries:** [joseph@kainosis.com](mailto:joseph@kainosis.com)
 - **Bugs and discussion:** [open an issue](../../issues)
+
+---
+
+## Related
+
+- [roaring-trade-portfolio-rotation](https://github.com/ChiefStarKid/roaring-trade-portfolio-rotation) — ETF sector rotation backtest (36,966 combinations) driven by the same M-Signal momentum framework. Where this repo analyses signal quality and exhaustion conditions, the rotation backtest asks which sectors to hold and when to exit. The two repos form the analytical and execution layers of the same momentum system.
